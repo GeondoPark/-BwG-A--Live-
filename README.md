@@ -12,19 +12,20 @@
 
 ```text
 유튜브 영상을 업로드하기 전에 AI가 실제 화면(시각), 목소리·BGM(오디오), 대사(텍스트)를 모두 직접 시청하고 5가지 핵심 지표와 실시간 팩트체크로 성적표를 매겨주는 웹앱 'AI 영상 평가단'을 만들어줘.
-
 [기술 및 멀티모달 정확도 핵심 규칙 (절대 준수)]
 1. 스택: React(Vite, TS, Tailwind CSS, lucide-react) + Express(server.ts, @google/genai, youtube-transcript)
 2. 모델: 모든 단계에서 반드시 "gemini-3.8-flash"만 사용해.
-3. [🚫 예시 영상·샘플 데이터·초기 더미 결과 절대 생성 금지 (필수)]:
-   - 코드 안에 SAMPLE_VIDEOS, EXAMPLE_URLS, MOCK_DATA, INITIAL_RESULT 같은 예시 상수나 가짜 데이터를 절대 만들지 마!
+3. [🚫 예시 영상·샘플 데이터·초기 더미 결과 및 180초(03:00) 기본 길이 하드코딩 절대 금지 (필수)]:
+   - 코드 안에 SAMPLE_VIDEOS, EXAMPLE_URLS, MOCK_DATA, INITIAL_RESULT 같은 예시 상수나 가짜 폴백 데이터를 절대 만들지 마!
    - URL 입력창 아래에 '예시 영상 1', '샘플 링크 넣기', '데모 결과 보기' 같은 예시 버튼을 절대 만들지 마!
+   - 서버에서 영상 길이를 구하지 못했을 때 기본값으로 180초(03:00) 등을 넣는 코드(`lengthSeconds || 180` 등)를 절대 작성하지 마!
    - 앱을 처음 열었을 때 URL 입력창은 반드시 빈 문자열(useState(""))이어야 하고, 분석 결과 상태도 반드시 null(useState(null))이어야 해. 사용자가 직접 유튜브 URL을 입력하고 [평가 시작] 버튼을 눌러 실제 백엔드 API 응답이 오기 전에는 어떠한 예시 성적표나 예시 타임스탬프도 화면에 표시하지 마(분석 전에는 깔끔한 안내 Empty State만 표시할 것).
 4. 백엔드 /api/analyze-video 3단계 멀티모달 파이프라인 (텍스트만 읽는 요약기 절대 금지!):
-   - STEP 1 (초 단위 타임스탬프 앵커 확보):
-     youtube-transcript로 영상 처음부터 끝까지 전체 대사와 정확한 시작 초(MM:SS, seconds)를 추출해(절대 중간에 slice로 자르지 말 것). 이 데이터는 영상의 실제 길이와 대사 시점을 맞추는 타임스탬프 기준표(Time-Anchor)로 사용해.
-   - STEP 2 (Agentic Video 멀티모달 시청 — 🖼️시각 + 🔊오디오 + 📝텍스트 통합 분석, 무조건 실행!):
-     자막 유무와 상관없이 반드시 아래 정확한 형식으로 ai.interactions.create를 호출해 영상을 직접 시청해:
+   - STEP 1 (초 단위 타임스탬프 앵커 확보 & ms/s 단위 정규화):
+     youtube-transcript로 영상 처음(00:00)부터 끝까지 전체 대사와 시작 시점을 추출해(절대 slice로 앞부분만 자르지 말 것).
+     * [⏱️ 시간 단위 주의]: youtube-transcript의 offset 값이 밀리초(ms)인지 초(s)인지 반드시 확인해 정확한 초(seconds)와 "MM:SS" 문자열로 변환하고, 만약 자막 추출이 실패하면 가짜 시간을 넣지 말고 STEP 2의 Agentic Video 내장 음성인식(ASR) 타임스탬프를 100% 기준으로 사용해.
+   - STEP 2 (Agentic Video 전 구간 멀티모달 시청 — 🖼️시각 + 🔊오디오 + 📝텍스트 통합 분석, 무조건 실행!):
+     자막 유무와 상관없이 반드시 아래 정확한 형식으로 ai.interactions.create를 호출해 영상을 처음부터 끝까지 직접 시청해:
        const interaction = await ai.interactions.create({
          model: "gemini-3.8-flash",
          input: [
@@ -36,7 +37,10 @@
            },
            {
              type: "text",
-             text: "타임스탬프 기준표(STEP 1)를 시간 앵커로 삼아, 영상의 처음부터 끝까지 직접 보고 들으며 [🖼️ 화면 연출·출연자 표정·컷 전환 속도], [🔊 목소리 톤·텐션·오디오 공백·BGM], [📝 실제 대사·스토리]를 통합 분석해줘..."
+             text: `[필수: 타임스탬프 100% 실측 지침]
+1) 먼저 내장 load_video 도구를 (include_asr: true, include_frames: false, include_audio: false, start_time/end_time 미지정)으로 호출해 00:00부터 실제 영상 마지막 끝 초(duration_seconds)까지의 정확한 전체 길이와 초 단위 대사 타임스탬프(ASR)를 확보해.
+2) 이어서 실제 영상 전체 길이(duration_seconds)의 초반·중반·후반 전 구간에 걸쳐 load_video(include_frames: true, include_audio: true, start_time: ..., end_time: ..., fps: 0.5)를 호출해 [🖼️ 화면 연출·출연자 표정·컷 전환 속도], [🔊 목소리 톤·텐션·오디오 공백·BGM], [📝 실제 대사·스토리]를 직접 보고 들어.
+3) 모든 평가 장면의 타임스탬프("MM:SS")는 절대 임의로 어림잡거나 반올림(01:00, 02:00 등)하지 말고, 방금 load_video에서 직접 확인한 실제 대사 발화 시점 및 화면 등장 초(타임코드)와 1초의 오차도 없이 정확히 일치시켜! 영상의 실제 전체 길이(duration_seconds)를 초과하는 타임스탬프는 절대 생성하지 마!`
            }
          ]
        });
@@ -48,10 +52,17 @@
      ⑤ 🛡️ 팩트 & 논란 방어력 (영상 속 수치·주장이나 장면 중 댓글창에서 공격받을 요소는 없는가?)
    - STEP 3 (Google Search 실시간 팩트체크):
      ai.models.generateContent (model: "gemini-3.8-flash", config: { tools: [{ googleSearch: {} }] })로 영상 속 주요 사실·통계·주장을 최신 웹 정보와 대조해 신호등 판정([✅ 팩트 확인], [⚠️ 맥락 보충 필요], [🚨 사실 오류 주의])과 출처 링크를 생성해.
-5. 타임스탬프 정렬 규칙:
-   - 새로운 URL을 입력해 분석을 시작하면 이전 결과 상태를 즉시 초기화해.
-   - 모든 타임스탬프("MM:SS")와 seconds(분*60+초)는 실제 분석된 영상 시점과 100% 일치해야 해.
-
+5. [⏱️ 타임스탬프("MM:SS") ➔ 이동 초(seconds) 100% 정밀 동기화 규칙 (필수 구현)]:
+   - 새로운 URL을 입력해 분석을 시작하면 이전 결과 상태와 플레이어 시점을 즉시 초기화해.
+   - [LLM 암산 오류 원천 차단]: AI 모델이 JSON으로 "timestamp": "03:25"와 "seconds" 숫자를 따로 생성하면 암산 실수로 두 값이 어긋나는 경우가 많아. 따라서 백엔드(server.ts)와 프론트엔드(점프 함수) 양쪽 모두에서 AI가 준 seconds 숫자를 그대로 쓰지 말고, 반드시 아래 파서 함수로 "MM:SS"(또는 "HH:MM:SS") 문자열을 직접 계산해 정확한 초(exactSeconds)로 덮어써(override)!
+     const parseTimeToSeconds = (timeStr: string): number => {
+       const clean = String(timeStr || "00:00").replace(/[^0-9:]/g, "").trim();
+       const parts = clean.split(":").map(Number);
+       if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+       if (parts.length === 2) return parts[0] * 60 + parts[1];
+       return Number(clean) || 0;
+     };
+   - 프론트엔드에서 어떤 [▶ MM:SS] 배지나 핫스팟 칩을 클릭하든 반드시 parseTimeToSeconds(timestamp)로 계산한 정확한 초(exactSeconds)를 사용해 YouTube Iframe(enablejsapi=1)에 postMessage(JSON.stringify({ event: "command", func: "seekTo", args: [exactSeconds, true] }), "*") 및 playVideo 명령을 전송해서 1초 오차도 없이 즉시 해당 장면으로 점프·재생되게 구현해!
 [UI 디자인: 한눈에 확 들어오는 모던 벤토 그리드(Bento Grid) 스튜디오 (다크 테마 bg-[#090D16])]
 - [🚨 텍스트 잘림(...) 절대 금지 규칙 (필수 준수)]:
   모든 평가 지표 카드의 설명, 칭찬 장면(🟢), 아쉬운 장면(🟡), 팩트체크 코멘트에 Tailwind의 truncate, line-clamp-*, text-ellipsis, whitespace-nowrap, 또는 텍스트를 가리는 고정 높이(h-*, max-h-*)를 절대 사용하지 마!
