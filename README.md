@@ -2,7 +2,7 @@
 
 각 단계별(`Prompt 1` ➔ `Prompt 2`) 박스 우측 상단의 **복사(`📋`) 버튼**을 눌러 **[Google AI Studio](https://aistudio.google.com)**에 순서대로 붙여넣으세요.
 
-> ### 🔑 시작 전 세팅 (AI Studio가 처음이신 분만!)
+> ### 🔑 시작 전 세팅
 > 1. **[Google AI Studio API Key 페이지](https://aistudio.google.com/apikey)** 에 접속해 우측 상단 **`[+ Create API key]`** 버튼을 누릅니다.
 > 2. 프로젝트 선택 칸(`Choose an imported project`)을 눌러 **`Default Gemini Project`**(또는 **`+ Create a new project`** 로 새 프로젝트 생성)를 선택한 뒤 **`[Create key]`**를 누르면 준비 끝!
 > 3. 이제 **[AI Studio 앱 빌더](https://aistudio.google.com/apps)** 로 이동해 아래 `Prompt 1` ➔ `Prompt 2` 우측 상단의 **복사(`📋`) 버튼**을 눌러 순서대로 붙여넣으세요. *(💡 첫 영상 테스트는 분석이 빨리 끝나는 **5분 이내의 영상**으로 먼저 돌려보시는 것을 추천합니다!)*
