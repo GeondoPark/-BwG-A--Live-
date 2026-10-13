@@ -107,5 +107,4 @@
 
 ---
 ## Demo Link
-https://ai.studio/apps/998d4836-bdbd-4763-b078-6d889d92ad50
 
