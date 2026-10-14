@@ -4,7 +4,7 @@
 
 > ### 🔑 시작 전 세팅
 > 🎁 시작 전 세팅: GCP $300 크레딧 쿠폰 등록 & API 키 준비
-GCP $300 쿠폰 등록: Google Cloud 쿠폰 등록 페이지
+GCP $300 쿠폰 등록: Google Cloud 쿠폰 등록 페이지 (https://console.cloud.google.com/billing/redeem)
  (또는 좌측 메뉴 ➔ 결제(Billing) ➔ 프로모션(Promotions))에 접속해 안내받은 전용 쿠폰 코드 [ XXXXX-XXXXX-XXXXX ] 를 입력하고 크레딧을 등록합니다.
 
 > 카드 미등록 체험판(Trial Billing Account) 상태에서는 쿠폰이 있어도 Gemini API가 무료 등급(일 20회)으로 제한됩니다. GCP 결제 계정에서 결제 수단이 연결된 **정식 결제 계정(활성화 상태)*에 쿠폰을 등록하면 유료 Tier 1으로 즉시 승급되며, 사용 요금은 카드가 아닌 $300 크레딧에서 먼저 차감됩니다!
