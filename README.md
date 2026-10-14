@@ -3,8 +3,14 @@
 각 단계별(`Prompt 1` ➔ `Prompt 2`) 박스 우측 상단의 **복사(`📋`) 버튼**을 눌러 **[Google AI Studio](https://aistudio.google.com)**에 순서대로 붙여넣으세요.
 
 > ### 🔑 시작 전 세팅
-> 1. **[Google AI Studio API Key 페이지](https://aistudio.google.com/apikey)** 에 접속해 우측 상단 **`[+ Create API key]`** 버튼을 누릅니다.
-> 2. 프로젝트 선택 칸(`Choose an imported project`)을 눌러 **`Default Gemini Project`**(또는 **`+ Create a new project`** 로 새 프로젝트 생성)를 선택한 뒤 **`[Create key]`**를 누르면 준비 끝!
+> 🎁 시작 전 세팅: GCP $300 크레딧 쿠폰 등록 & API 키 준비
+GCP $300 쿠폰 등록: Google Cloud 쿠폰 등록 페이지
+ (또는 좌측 메뉴 ➔ 결제(Billing) ➔ 프로모션(Promotions))에 접속해 안내받은 전용 쿠폰 코드 [ XXXXX-XXXXX-XXXXX ] 를 입력하고 크레딧을 등록합니다.
+*💡 핵심 팁 (Tier 1 쿼터 잠금 해제): 카드 미등록 체험판(Trial Billing Account) 상태에서는 쿠폰이 있어도 Gemini API가 무료 등급(일 20회)으로 제한됩니다. GCP 결제 계정에서 결제 수단이 연결된 **정식 결제 계정(활성화 상태)*에 쿠폰을 등록하면 유료 Tier 1으로 즉시 승급되며, 사용 요금은 카드가 아닌 $300 크레딧에서 먼저 차감됩니다!
+
+> AI Studio에 쿠폰 결제 계정 연결 & API 키 준비:
+**[Google AI Studio API Key 페이지](https://aistudio.google.com/apikey)** 에 접속해
+> 우측 상단 [+ Create API key] 로 키를 생성하고, 프로젝트 우측의 Set up Billing 을 눌러 방금 $300 쿠폰을 등록한 GCP 결제 계정을 연결합니다.
 
 ---
 
