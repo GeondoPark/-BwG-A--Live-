@@ -4,10 +4,12 @@
 
 > ### 🔑 시작 전 세팅
 > 🎁 시작 전 세팅: GCP $300 크레딧 쿠폰 등록 & API 키 준비
-GCP $300 쿠폰 등록: Google Cloud 쿠폰 등록 페이지 (https://console.cloud.google.com/billing/redeem)
- (또는 좌측 메뉴 ➔ 결제(Billing) ➔ 프로모션(Promotions))에 접속해 안내받은 전용 쿠폰 코드 [ XXXXX-XXXXX-XXXXX ] 를 입력하고 크레딧을 등록합니다.
-
-> 카드 미등록 체험판(Trial Billing Account) 상태에서는 쿠폰이 있어도 Gemini API가 무료 등급(일 20회)으로 제한됩니다. GCP 결제 계정에서 결제 수단이 연결된 **정식 결제 계정(활성화 상태)*에 쿠폰을 등록하면 유료 Tier 1으로 즉시 승급되며, 사용 요금은 카드가 아닌 $300 크레딧에서 먼저 차감됩니다!
+1. GCP $300 쿠폰 등록: Google Cloud 쿠폰 등록 페이지 (https://console.cloud.google.com/billing/redeem)에 접속해 안내받은 전용 쿠폰 코드 [ XXXXX-XXXXX-XXXXX ] 를 입력하고 크레딧을 등록합니다.
+### 신규 사용자의 경우
+1) 쿠폰 입력 전 신규 사용자의 경우 결제 계정 생성을 진행합니다.
+2) 결제 카드 및 신분증 등록으로 '결제 정보 확인' 진행합니다.
+3) 계정 활성화를 위해 4만원 선결제 필요 (Tip: 선 결제 이후 취소하면 계정은 활성화 되고 결제 금액은 환불 됩니다.)
+4) 위 링크로 크레딧 쿠폰을 등록합니다.
 
 > AI Studio에 쿠폰 결제 계정 연결 & API 키 준비:
 **[Google AI Studio API Key 페이지](https://aistudio.google.com/apikey)** 에 접속해
